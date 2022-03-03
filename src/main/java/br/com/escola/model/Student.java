@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-public class Aluno extends Pessoa {
-    private String matricula;
+public class Student extends Person {
+    private String registration;
+
 }

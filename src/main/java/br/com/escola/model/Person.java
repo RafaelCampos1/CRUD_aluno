@@ -2,20 +2,18 @@ package br.com.escola.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 @Data
-public class Pessoa {
+public class Person {
 
     @Id
     private Integer id;
-    private String nome;
-    private String sobrenome;
-    private String cpf;
-    private String rg;
+    private String firstName;
+    private String secondName;
+    private String realID;
     private String email;
 
 }
