@@ -1,0 +1,28 @@
+package br.com.escola.exception;
+
+import br.com.escola.enums.ErrorDescription;
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@Data
+public class BusinessException extends RuntimeException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7806029002430564887L;
+
+    private String message;
+
+
+    public BusinessException (final ErrorDescription errorDescription) {
+        this.message = errorDescription.getErroDescription();
+    }
+
+
+
+}
+	    
+

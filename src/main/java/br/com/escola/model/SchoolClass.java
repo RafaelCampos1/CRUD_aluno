@@ -10,7 +10,7 @@ import java.util.List;
 public class SchoolClass {
 
     @Id
-    private Integer Id;
+    private Long Id;
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})

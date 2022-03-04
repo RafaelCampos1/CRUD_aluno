@@ -1,12 +1,13 @@
 package br.com.escola.service;
 
 import br.com.escola.dao.IDaoStudent;
+import br.com.escola.exception.BusinessException;
+import br.com.escola.enums.ErrorDescription;
 import br.com.escola.model.Student;
-import lombok.RequiredArgsConstructor;
+import br.com.escola.validator.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service// Service
@@ -29,6 +30,10 @@ public class ServiceStudent implements IServiceStudent {
 
     @Override
     public Student saveStudent(Student student){
-        return iDaoStudent.save(student);
+        if(!Validator.isCPF(student.getRealID())){
+            throw new BusinessException(ErrorDescription.INVALID_REALID);
+        }
+
+       return iDaoStudent.save(student);
     }
 }
