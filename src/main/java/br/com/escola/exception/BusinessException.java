@@ -2,9 +2,6 @@ package br.com.escola.exception;
 
 import br.com.escola.enums.ErrorDescription;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Data
 public class BusinessException extends RuntimeException {

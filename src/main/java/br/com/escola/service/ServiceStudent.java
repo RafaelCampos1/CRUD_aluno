@@ -1,6 +1,6 @@
 package br.com.escola.service;
 
-import br.com.escola.dao.IDaoStudent;
+import br.com.escola.repository.StudentRepository;
 import br.com.escola.exception.BusinessException;
 import br.com.escola.enums.ErrorDescription;
 import br.com.escola.model.Student;
@@ -15,9 +15,9 @@ import java.util.List;
 //@RequiredArgsConstructor anotacao para nao precisar do construtor
 public class ServiceStudent implements IServiceStudent {
 
-    private final IDaoStudent iDaoStudent;
+    private final StudentRepository iDaoStudent;
 
-    public ServiceStudent(IDaoStudent iDaoStudent) {
+    public ServiceStudent(StudentRepository iDaoStudent) {
         this.iDaoStudent = iDaoStudent;
 
     }

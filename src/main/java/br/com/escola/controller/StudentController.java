@@ -1,8 +1,6 @@
 package br.com.escola.controller;
 
 
-import br.com.escola.enums.ErrorDescription;
-import br.com.escola.exception.BusinessException;
 import br.com.escola.model.Student;
 import br.com.escola.service.IServiceStudent;
 import lombok.extern.slf4j.Slf4j;
