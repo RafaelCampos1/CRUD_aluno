@@ -2,7 +2,7 @@ package br.com.escola.controller;
 
 
 import br.com.escola.model.Student;
-import br.com.escola.service.IServiceStudent;
+import br.com.escola.service.ServiceStudent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -19,21 +19,22 @@ import java.util.Map;
 public class StudentController {
 
     @Autowired // deixar por euqnato (parecido com o construtor)
-    private IServiceStudent iServiceStudent;
-
-
-
+    private ServiceStudent serviceStudent;
 
     @GetMapping("/students")
-    public ResponseEntity<List<Student>> getStudent() throws Exception {
-        return ResponseEntity.ok().body(iServiceStudent.getStudent());
+    public ResponseEntity<Optional<Student>> getStudent() throws Exception {
+        Optional<Student> student1 = serviceStudent.getStudent().stream().parallel().filter(student ->
+                student.getId() == 4).findAny();
+        return ResponseEntity.ok().body(student1);
+
+
     }
 
     @PostMapping(value = "/register/student")
     public ResponseEntity<Map<String, String>> saveStudent(@RequestBody Student student){
         Map<String, String> response = new HashMap<>();
         try{
-            iServiceStudent.saveStudent(student);
+            serviceStudent.saveStudent(student);
         }catch(Exception erro){
             response.put("message", erro.getMessage());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
