@@ -4,6 +4,7 @@ import br.com.escola.model.SchoolClass;
 import br.com.escola.model.Student;
 import br.com.escola.repository.SchoolClassRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -23,6 +24,10 @@ public class ServiceSchoolClass {
 
     public SchoolClass saveSchoolClass(SchoolClass schoolClass){
         return schoolClassRepository.save(schoolClass);
+    }
+
+    public void saveStudentOnC(List<Student> studentList){
+        studentList.add(studentList.get(0));
     }
 
 }

@@ -1,12 +1,11 @@
 package br.com.escola.model;
 
-import lombok.Data;
-
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+
 public class SchoolClass {
 
     @Id
@@ -15,15 +14,41 @@ public class SchoolClass {
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Student> studentList;
+    private List<Student> studentList = new ArrayList<>();
 
 
-    public SchoolClass(String name, List<Student> studentList) {
+    public SchoolClass(Long Id,String name, List<Student> studentList) {
+        this.Id = Id;
         this.name = name;
         this.studentList = studentList;
     }
 
     public SchoolClass() {
 
+    }
+
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long id) {
+        Id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Student> getStudentList() {
+        return studentList;
+    }
+
+    public SchoolClass setStudentList(List<Student> studentList) {
+        this.studentList = studentList;
+        return null;
     }
 }

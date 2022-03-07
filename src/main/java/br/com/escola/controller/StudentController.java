@@ -1,7 +1,9 @@
 package br.com.escola.controller;
 
 
+import br.com.escola.model.SchoolClass;
 import br.com.escola.model.Student;
+import br.com.escola.service.ServiceSchoolClass;
 import br.com.escola.service.ServiceStudent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +23,14 @@ public class StudentController {
     @Autowired // deixar por euqnato (parecido com o construtor)
     private ServiceStudent serviceStudent;
 
+
+
+
     @GetMapping("/students")
     public ResponseEntity<Optional<Student>> getStudent() throws Exception {
-        Optional<Student> student1 = serviceStudent.getStudent().stream().parallel().filter(student ->
-                student.getId() == 4).findAny();
-        return ResponseEntity.ok().body(student1);
+      //  serviceSchoolClass.procurar();
 
-
+    return null;
     }
 
     @PostMapping(value = "/register/student")
