@@ -18,7 +18,6 @@ public class ServiceSchoolClass {
     }
 
     public List<SchoolClass> getSchoolClass(){
-
         return schoolClassRepository.findAll();
     }
 
@@ -26,7 +25,7 @@ public class ServiceSchoolClass {
         return schoolClassRepository.save(schoolClass);
     }
 
-    public void saveStudentOnC(List<Student> studentList){
+    public void saveStudentOnExistingClass(List<Student> studentList){
         studentList.add(studentList.get(0));
     }
 
