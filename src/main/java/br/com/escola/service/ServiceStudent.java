@@ -9,13 +9,10 @@ import br.com.escola.validator.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-@Service// Service
+@Service
 @Slf4j
-
 public class ServiceStudent {
 
     private final StudentRepository studentRepository;
@@ -26,10 +23,19 @@ public class ServiceStudent {
         this.serviceSchoolClass = serviceSchoolClass;
     }
 
+    public Optional<Student> getStudent(Long id){
+        return studentRepository.findById(id);
+    }
 
-    public List<Student> getStudent(){
-
+    public List<Student> getStudents(){
         return studentRepository.findAll();
+    }
+
+    public Student updateStudent(Student student){
+        if(!Validator.isCPF(student.getRealID())){
+            throw new BusinessException(ErrorDescription.INVALID_REALID);
+        }
+        return studentRepository.save(student);
     }
 
 
@@ -37,7 +43,6 @@ public class ServiceStudent {
         if(!Validator.isCPF(student.getRealID())){
             throw new BusinessException(ErrorDescription.INVALID_REALID);
         }
-
         Optional<SchoolClass> schoolClass =  serviceSchoolClass.getSchoolClass().stream()
                 .filter(SC -> SC.getStudentList().size() < 5).findFirst();
 
@@ -48,20 +53,14 @@ public class ServiceStudent {
         listStudent.add(student);
         studentRepository.save(student);
 
-
         if(schoolClass.isPresent()){
-           serviceSchoolClass.saveStudentOnC(listStudent);
+           serviceSchoolClass.saveStudentOnExistingClass(listStudent);
         }
         else{
             SchoolClass newSchoolClass = new SchoolClass();
-            log.info(String.valueOf(newSchoolClass.getId()));
-
-
             newSchoolClass.setName("Turma ");
-           newSchoolClass.setStudentList(listStudent);
-           log.info(String.valueOf(newSchoolClass.getId()));
-           serviceSchoolClass.saveSchoolClass(newSchoolClass);
-            log.info(String.valueOf(newSchoolClass.getId()));
+            newSchoolClass.setStudentList(listStudent);
+            serviceSchoolClass.saveSchoolClass(newSchoolClass);
         }
 
         return student;
