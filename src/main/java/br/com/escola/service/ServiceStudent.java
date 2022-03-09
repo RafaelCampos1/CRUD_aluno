@@ -9,6 +9,7 @@ import br.com.escola.validator.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Service
@@ -38,31 +39,44 @@ public class ServiceStudent {
         return studentRepository.save(student);
     }
 
-
     public Student saveStudent(Student student){
         if(!Validator.isCPF(student.getRealID())){
             throw new BusinessException(ErrorDescription.INVALID_REALID);
         }
-        Optional<SchoolClass> schoolClass =  serviceSchoolClass.getSchoolClass().stream()
+        Optional<SchoolClass> schoolClass =  serviceSchoolClass.getSchoolClasses().stream()
                 .filter(SC -> SC.getStudentList().size() < 5).findFirst();
 
         List<Student> listStudent = schoolClass.isPresent() ?
                 schoolClass.get().getStudentList()
                 : new ArrayList<>();
 
-        listStudent.add(student);
-        studentRepository.save(student);
+        List<SchoolClass> schoolClassList = serviceSchoolClass.getSchoolClass();
 
-        if(schoolClass.isPresent()){
-           serviceSchoolClass.saveStudentOnExistingClass(listStudent);
-        }
-        else{
+        if(schoolClass.isEmpty()){
             SchoolClass newSchoolClass = new SchoolClass();
-            newSchoolClass.setName("Turma ");
+            if(schoolClassList.isEmpty()){
+                student.setSchoolClass("Turma A");
+                newSchoolClass.setName("Turma A");
+            }else{
+                String lastWord = String.valueOf(schoolClassList.get(0).getName().charAt(schoolClassList.get(0).getName().length() - 1));
+                byte[] bytes = lastWord.getBytes(StandardCharsets.US_ASCII);
+                int word = bytes[0]+1;
+                lastWord = String.valueOf((char) word);
+                newSchoolClass.setName("Turma "+ lastWord);
+                student.setSchoolClass(schoolClassList.get(0).getName());
+            }
+
             newSchoolClass.setStudentList(listStudent);
+            student.setSchoolClass(newSchoolClass.getName());
+            studentRepository.save(student);
             serviceSchoolClass.saveSchoolClass(newSchoolClass);
         }
 
+        if(schoolClass.isPresent())
+            student.setSchoolClass(schoolClassList.get(0).getName());
+        listStudent.add(student);
+        studentRepository.save(student);
+        serviceSchoolClass.saveStudentOnExistingClass(listStudent);
         return student;
     }
 

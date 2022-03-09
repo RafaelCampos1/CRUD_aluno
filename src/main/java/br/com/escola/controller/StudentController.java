@@ -1,6 +1,5 @@
 package br.com.escola.controller;
 
-
 import br.com.escola.model.Student;
 import br.com.escola.service.ServiceStudent;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +26,8 @@ public class StudentController {
         Optional<Student> student = serviceStudent.getStudent(id);
         if(student.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return serviceStudent.getStudent(id) ;
+
+        return serviceStudent.getStudent(id);
     }
 
     @PutMapping("update/student")
@@ -36,6 +35,7 @@ public class StudentController {
         Optional<Student> newStudent = serviceStudent.getStudent(student.getId());
         if(newStudent.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
         return Optional.ofNullable(serviceStudent.updateStudent(student));
     }
 
