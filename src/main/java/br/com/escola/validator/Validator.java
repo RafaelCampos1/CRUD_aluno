@@ -4,14 +4,14 @@ import java.util.InputMismatchException;
 
 public class Validator {
 
-    public static boolean isCPF(String CPF) {
-        if (CPF.equals("00000000000") ||
-                CPF.equals("11111111111") ||
-                CPF.equals("22222222222") || CPF.equals("33333333333") ||
-                CPF.equals("44444444444") || CPF.equals("55555555555") ||
-                CPF.equals("66666666666") || CPF.equals("77777777777") ||
-                CPF.equals("88888888888") || CPF.equals("99999999999") ||
-                (CPF.length() != 11))
+    public static boolean isRealID(String realID) {
+        if (realID.equals("00000000000") ||
+                realID.equals("11111111111") ||
+                realID.equals("22222222222") || realID.equals("33333333333") ||
+                realID.equals("44444444444") || realID.equals("55555555555") ||
+                realID.equals("66666666666") || realID.equals("77777777777") ||
+                realID.equals("88888888888") || realID.equals("99999999999") ||
+                (realID.length() != 11))
             return(false);
 
         char dig10, dig11;
@@ -21,7 +21,7 @@ public class Validator {
             sm = 0;
             peso = 10;
             for (i=0; i<9; i++) {
-                num = CPF.charAt(i) - 48;
+                num = realID.charAt(i) - 48;
                 sm = sm + (num * peso);
                 peso = peso - 1;
             }
@@ -34,7 +34,7 @@ public class Validator {
             sm = 0;
             peso = 11;
             for(i=0; i<10; i++) {
-                num = CPF.charAt(i) - 48;
+                num = realID.charAt(i) - 48;
                 sm = sm + (num * peso);
                 peso = peso - 1;
             }
@@ -44,13 +44,13 @@ public class Validator {
                 dig11 = '0';
             else dig11 = (char)(r + 48);
 
-            return (dig10 == CPF.charAt(9)) && (dig11 == CPF.charAt(10));
+            return (dig10 == realID.charAt(9)) && (dig11 == realID.charAt(10));
         } catch (InputMismatchException erro) {
             return(false);
         }
     }
 
-    public static String imprimeCPF(String CPF) {
+    public static String getCPF(String CPF) {
         return(CPF.substring(0, 3) + "." + CPF.substring(3, 6) + "." +
                 CPF.substring(6, 9) + "-" + CPF.substring(9, 11));
     }

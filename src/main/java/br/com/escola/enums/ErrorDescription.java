@@ -4,10 +4,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+
 public enum ErrorDescription {
 
-    INVALID_REALID("cpf esta invalido");
+    INVALID_REALID("cpf esta invalido"),
+    SAME_REALID("cpf igual"),
+    SAME_EMAIL("email igual");
 
     private String erroDescription;
 
