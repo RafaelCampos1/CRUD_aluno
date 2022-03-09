@@ -16,7 +16,6 @@ public class SchoolClass {
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Student> studentList = new ArrayList<>();
 
-
     public SchoolClass(Long Id,String name, List<Student> studentList) {
         this.Id = Id;
         this.name = name;
