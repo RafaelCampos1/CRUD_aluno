@@ -24,6 +24,18 @@ public class ServiceStudent {
         this.serviceSchoolClass = serviceSchoolClass;
     }
 
+    public String getStudentByRealId(String realId){
+        return (studentRepository.findByRealID(realId)==null) ?
+                null :
+                String.valueOf(studentRepository.findByEmail(realId).getRealID());
+    }
+
+    public String getStudentByEmail(String email){
+        return (studentRepository.findByEmail(email)==null)?
+                null :
+                String.valueOf(studentRepository.findByEmail(email).getEmail());
+    }
+
     public Optional<Student> getStudent(Long id){
         return studentRepository.findById(id);
     }
@@ -32,17 +44,27 @@ public class ServiceStudent {
         return studentRepository.findAll();
     }
 
-    public Student updateStudent(Student student){
-        if(!Validator.isCPF(student.getRealID())){
+    public Student validateStudent(Student student){
+
+        if(!Validator.isRealID(student.getRealID()))
             throw new BusinessException(ErrorDescription.INVALID_REALID);
-        }
+
+        String studentRealId = getStudentByRealId(student.getRealID());
+        if(student.getRealID().equals(studentRealId))
+            throw new BusinessException(ErrorDescription.SAME_REALID);
+
+        String studentEmail = getStudentByEmail(student.getEmail());
+        if(student.getEmail().equals(studentEmail))
+            throw new BusinessException(ErrorDescription.SAME_EMAIL);
+
+        return student;
+    }
+    public Student updateStudent(Student student){
         return studentRepository.save(student);
     }
 
     public Student saveStudent(Student student){
-        if(!Validator.isCPF(student.getRealID())){
-            throw new BusinessException(ErrorDescription.INVALID_REALID);
-        }
+        validateStudent(student);
         Optional<SchoolClass> schoolClass =  serviceSchoolClass.getSchoolClasses().stream()
                 .filter(SC -> SC.getStudentList().size() < 5).findFirst();
 
