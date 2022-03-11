@@ -5,7 +5,6 @@ import br.com.escola.exception.BusinessException;
 import br.com.escola.model.SchoolClass;
 import br.com.escola.model.Student;
 import br.com.escola.repository.StudentRepository;
-import br.com.escola.validator.Validator;
 import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -23,9 +22,9 @@ public class StudentService {
         this.schoolClassService = schoolClassService;
     }
 
-    public String getStudentByRealId(String realId) {
-        return (studentRepository.findByRealID(realId)==null) ?
-                null : String.valueOf(studentRepository.findByEmail(realId).getRealID());
+    public String getStudentByCpf(String cpf) {
+        return (studentRepository.findByCpf(cpf)==null) ?
+                null : String.valueOf(studentRepository.findByCpf(cpf).getCpf());
     }
 
     public String getStudentByEmail(String email) {
@@ -41,29 +40,14 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public Student validateStudent(Student student){
-
-        if(!Validator.isRealID(student.getRealID()))
-            throw new BusinessException(ErrorDescription.INVALID_REALID);
-
-        String studentRealId = getStudentByRealId(student.getRealID());
-        if(student.getRealID().equals(studentRealId))
-            throw new BusinessException(ErrorDescription.SAME_REALID);
-
-        String studentEmail = getStudentByEmail(student.getEmail());
-        if(student.getEmail().equals(studentEmail))
-            throw new BusinessException(ErrorDescription.SAME_EMAIL);
-        return student;
-    }
-    public Student updateStudent(Student student){
-        return studentRepository.save(student);
+    public Student updateStudent(Student student,Long id){
+        return getStudent(id).isPresent() ?
+            studentRepository.save(student) : null;
     }
 
     public Student saveStudent(Student student) {
-   //     validateStudent(student);
-        // quero que quando nao tiver turma crie uma turma A e crie um e o coloque na turma
-        // quando tiver turma e a quantidade de alunos for menos q cinco coloque coloque o aluno na turma ja cria
-        // se tiver cheia cria uma nova turma e coloque uma letra a mais tipo turma A -> B
+        validateStudent(student);
+
         Optional<SchoolClass> schoolClass =  schoolClassService.getSchoolClasses().stream()
                 .filter(SC -> SC.getStudentList().size() < 5).findFirst();
 
@@ -98,6 +82,17 @@ public class StudentService {
         listStudent.add(student);
         studentRepository.save(student);
         schoolClassService.saveStudentOnExistingClass(listStudent);
+        return student;
+    }
+
+    public Student validateStudent(Student student){
+        String studentCpf = getStudentByCpf(student.getCpf());
+        if(student.getCpf().equals(studentCpf))
+            throw new BusinessException(ErrorDescription.SAME_CPF);
+
+        String studentEmail = getStudentByEmail(student.getEmail());
+        if(student.getEmail().equals(studentEmail))
+            throw new BusinessException(ErrorDescription.SAME_EMAIL);
         return student;
     }
 

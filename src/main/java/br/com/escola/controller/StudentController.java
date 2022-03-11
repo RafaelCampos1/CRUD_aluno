@@ -1,18 +1,18 @@
 package br.com.escola.controller;
 
+import br.com.escola.dto.StudentDTO;
+import br.com.escola.exception.BusinessException;
 import br.com.escola.model.Student;
 import br.com.escola.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -21,43 +21,45 @@ public class StudentController {
 
     @Autowired
     private StudentService studentService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @GetMapping("/student/{id}")
     @Operation(summary = "Find a student",description = "Returns a student by their id")
-    public Optional<Student> getStudent(@PathVariable Long id) {
-        Optional<Student> student = studentService.getStudent(id);
-        if(student.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return studentService.getStudent(id);
+    public ResponseEntity getStudent(@PathVariable Long id) {
+        return studentService.getStudent(id).isPresent() ?
+                ResponseEntity.ok().body(modelMapper.map(studentService.getStudent(id),StudentDTO.class))
+                :
+                ResponseEntity.status(HttpStatus.FORBIDDEN).body("Student not found");
     }
 
     @PutMapping("update/student")
-    @Operation(summary = "Update a student",description = "Update a student by their id (important to put all student information)")
-    public Optional<Student> updateStudent(@RequestBody Student student) {
-        Optional<Student> newStudent = studentService.getStudent(student.getId());
-        if(newStudent.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return Optional.ofNullable(studentService.updateStudent(student));
+    @Operation(summary = "Update a student by their id",description = "Update a student by their id (important to put all student information)")
+    public ResponseEntity updateStudent(@RequestBody Student student) {
+        return studentService.updateStudent(student, student.getId()) != null ?
+                ResponseEntity.ok().body(modelMapper.map(studentService.updateStudent(student, student.getId()),StudentDTO.class))
+                :
+                ResponseEntity.status(HttpStatus.FORBIDDEN).body("Student not found");
     }
 
     @GetMapping("/students")
     @Operation(summary = "Find all students",description = "Returns all information for each student that is registered in the database")
-    public List<Student> getStudents() {
-        return studentService.getStudents();
+    public ResponseEntity getStudents() {
+
+        return studentService.getStudents().size() > 0 ?
+                ResponseEntity.ok().body(modelMapper.map(studentService.getStudents(), new TypeToken<List<StudentDTO>>() {}.getType()))
+                :
+                ResponseEntity.status(HttpStatus.FORBIDDEN).body("We dont have students yet");
     }
 
     @PostMapping(value = "/register/student")
     @Operation(summary = "Register a student",description = "Register a student. Important to put all student information (without the id)")
-    public ResponseEntity<Map<String, String>> saveStudent(@RequestBody Student student){
-        Map<String, String> response = new HashMap<>();
+    public ResponseEntity saveStudent(@RequestBody Student student) {
         try{
-            studentService.saveStudent(student);
-        }catch(Exception erro){
-            response.put("message", erro.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.ok().body(modelMapper.map(studentService.saveStudent(student), StudentDTO.class));
+        }catch(BusinessException exception){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
         }
-        response.put("message", "Student created successfully");
-        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
 }
