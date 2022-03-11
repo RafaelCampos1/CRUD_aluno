@@ -20,7 +20,7 @@ class StudentServiceTest {
     public static final String RAFAEL       = "rafael";
     public static final String CAMPOS       = "campos";
     public static final String HOTMAIL      = "rafael@hotmail.com";
-    public static final String REAL_ID      = "123";
+    public static final String CPF          = "123";
     public static final String REGISTRATION = "111";
     public static final String SCHOOL_CLASS = "Turma A";
     public static final long ID             = 1L;
@@ -40,7 +40,7 @@ class StudentServiceTest {
     }
 
     @Test
-    void getStudentByRealId() {
+    void getStudentByCpf() {
     }
 
     @Test
@@ -73,8 +73,8 @@ class StudentServiceTest {
     }
 
     private void startStundet(){
-      //  student = new Student(ID, RAFAEL, CAMPOS, HOTMAIL, REAL_ID, REGISTRATION, SCHOOL_CLASS);
+      //  student = new Student(ID, RAFAEL, CAMPOS, HOTMAIL, CPF, REGISTRATION, SCHOOL_CLASS);
         // optional de novo estudante
-     //   studentOptional = Optional.of(new Student(ID, RAFAEL, CAMPOS, HOTMAIL, REAL_ID, REGISTRATION, SCHOOL_CLASS));
+     //   studentOptional = Optional.of(new Student(ID, RAFAEL, CAMPOS, HOTMAIL, CPF, REGISTRATION, SCHOOL_CLASS));
     }
 }

@@ -3,10 +3,9 @@ package br.com.escola.service;
 import br.com.escola.model.SchoolClass;
 import br.com.escola.model.Student;
 import br.com.escola.repository.SchoolClassRepository;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +21,7 @@ public class SchoolClassService {
     public Optional<SchoolClass> getSchoolByName(String name) {
         return schoolClassRepository.findByName(name);
     }
+
     public List<SchoolClass> getSchoolClassName(){
         return schoolClassRepository.findAll(Sort.by(Sort.Direction.DESC, "name"));
     }

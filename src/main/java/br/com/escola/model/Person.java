@@ -16,6 +16,5 @@ public class Person {
     private String firstName;
     private String lastName;
     private String email;
-    //MUDAR P CPF PQ SHEORY FALOU 100% COMPROVADO
-    private String realID;
+    private String cpf;
 }

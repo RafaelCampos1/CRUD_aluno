@@ -6,8 +6,8 @@ import lombok.Getter;
 public enum ErrorDescription {
 
     //TODO mudar p ingles
-    INVALID_REALID("cpf esta invalido"),
-    SAME_REALID("cpf igual"),
+    INVALID_CPF("cpf esta invalido"),
+    SAME_CPF("cpf igual"),
     SAME_EMAIL("email igual");
 
     private String erroDescription;
