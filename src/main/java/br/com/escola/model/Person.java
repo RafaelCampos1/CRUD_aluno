@@ -10,13 +10,12 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 @Data
 public class Person {
-
-    @javax.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
     private String firstName;
-    private String secondName;
+    private String lastName;
     private String email;
+    //MUDAR P CPF PQ SHEORY FALOU 100% COMPROVADO
     private String realID;
-
 }

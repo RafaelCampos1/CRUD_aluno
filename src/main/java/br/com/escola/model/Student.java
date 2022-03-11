@@ -7,8 +7,6 @@ import javax.persistence.*;
 @Entity
 @Data
 public class Student extends Person{
-
     private String registration;
     private String schoolClass;
-
 }
