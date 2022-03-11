@@ -1,11 +1,15 @@
 package br.com.escola.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-
+@Getter
+@Setter
 public class SchoolClass {
 
     @Id
@@ -23,27 +27,6 @@ public class SchoolClass {
     }
 
     public SchoolClass() {
-
-    }
-
-    public Long getId() {
-        return Id;
-    }
-
-    public void setId(Long id) {
-        Id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Student> getStudentList() {
-        return studentList;
     }
 
     public SchoolClass setStudentList(List<Student> studentList) {
