@@ -1,5 +1,6 @@
 package br.com.escola.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.GeneratedValue;
@@ -12,6 +13,7 @@ import javax.persistence.MappedSuperclass;
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long Id;
     private String firstName;
     private String lastName;
