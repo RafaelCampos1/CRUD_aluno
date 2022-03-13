@@ -9,9 +9,9 @@ public enum ErrorDescription {
     SAME_CPF("CPF ALREADY REGISTERED"),
     SAME_EMAIL("EMAIL ALREADY REGISTERED");
 
-    private String erroDescription;
+    private final String errorDescription;
 
-    ErrorDescription( String erroDescription) {
-        this.erroDescription = erroDescription;
+    ErrorDescription( String errorDescription) {
+        this.errorDescription = errorDescription;
     }
 }

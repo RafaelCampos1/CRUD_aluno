@@ -52,22 +52,21 @@ public class StudentService {
         validateStudent(student);
         Optional<SchoolClass> schoolClassLessFive = schoolClassService.getSchoolClasses().stream()
                 .filter(SC -> SC.getStudentList().size() < 5).findFirst();
-
         List<Student> listStudent = schoolClassLessFive.isPresent() ?
                 schoolClassLessFive.get().getStudentList() : new ArrayList<>();
 
         if (schoolClassLessFive.isEmpty() ) {
             SchoolClass newSchoolClass = new SchoolClass();
             newSchoolClass.setName(getNewSchoolClassName());
-            newSchoolClass.setStudentList(listStudent);
+            newSchoolClass.setStudentList( listStudent);
             student.setSchoolClass(schoolClassService.getSchoolClassNameInDESC());
             student.setSchoolClass(newSchoolClass.getName());
             studentRepository.save(student);
             schoolClassService.saveSchoolClass(newSchoolClass);
+
         }else {
             student.setSchoolClass(schoolClassLessFive.get().getName());
         }
-
         listStudent.add(student);
         studentRepository.save(student);
         schoolClassService.saveStudentOnExistingClass(listStudent);

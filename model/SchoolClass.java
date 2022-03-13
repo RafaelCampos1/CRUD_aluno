@@ -1,5 +1,6 @@
 package br.com.escola.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Data
 public class SchoolClass {
 
     @Id
@@ -21,16 +21,5 @@ public class SchoolClass {
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Student> studentList = new ArrayList<>();
 
-    public SchoolClass(String name,List<Student> studentList) {
-        this.studentList = studentList;
-        this.name = name;
-    }
-
-    public SchoolClass() {
-    }
-
-    public void setStudentList(List<Student> studentList) {
-        this.studentList = studentList;
-    }
 
 }
