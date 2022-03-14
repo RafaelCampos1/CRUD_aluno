@@ -12,5 +12,4 @@ public class SchoolClassDTO {
     @JsonIgnore
     private String lastName;
 
-
 }

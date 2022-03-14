@@ -11,4 +11,5 @@ public class StudentDTO {
     private String cpf;
     private String registration;
     private String schoolClass;
+
 }

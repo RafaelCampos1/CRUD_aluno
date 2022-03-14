@@ -38,5 +38,4 @@ public class SchoolClassService {
     public void saveStudentOnExistingClass(List<Student> studentList){
         studentList.add(studentList.get(0));
     }
-
 }

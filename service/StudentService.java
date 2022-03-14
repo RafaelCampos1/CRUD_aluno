@@ -8,9 +8,7 @@ import br.com.escola.repository.StudentRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -49,11 +47,12 @@ public class StudentService {
     }
 
     public Student saveStudent(Student student) {
-        validateStudent(student);
         Optional<SchoolClass> schoolClassLessFive = schoolClassService.getSchoolClasses().stream()
                 .filter(SC -> SC.getStudentList().size() < 5).findFirst();
+
         List<Student> listStudent = schoolClassLessFive.isPresent() ?
                 schoolClassLessFive.get().getStudentList() : new ArrayList<>();
+
 
         if (schoolClassLessFive.isEmpty() ) {
             SchoolClass newSchoolClass = new SchoolClass();
@@ -67,6 +66,9 @@ public class StudentService {
         }else {
             student.setSchoolClass(schoolClassLessFive.get().getName());
         }
+        //pegar os 60 alunos adicionar mais um e dps devolver p banco salvar
+
+        //quero apenas adicionar um no final, sem ter que pegar todos os alunos
         listStudent.add(student);
         studentRepository.save(student);
         schoolClassService.saveStudentOnExistingClass(listStudent);
