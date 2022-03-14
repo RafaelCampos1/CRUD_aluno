@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins="*")//TODO VER ISSO
-@Slf4j
 public class SchoolClassController {
 
     @Autowired
@@ -25,7 +24,6 @@ public class SchoolClassController {
     @GetMapping("find/school")
     @Operation(summary = "Find a school class by name",description = "Returns a school class by their name")
     public ResponseEntity getSchoolClass(SchoolClassDTO schoolClassDTO) {
-        log.info(schoolClassDTO.getFirstName());
         return schoolClassService.getSchoolByName(schoolClassDTO.getFirstName()).isPresent()?
                 ResponseEntity.ok().body(modelMapper.map(schoolClassService.getSchoolByName(schoolClassDTO.getFirstName()), SchoolClass.class))
                 :
