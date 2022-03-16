@@ -1,13 +1,11 @@
 package br.com.escola.controller;
 
 import br.com.escola.dto.StudentDTO;
-import br.com.escola.exception.BusinessException;
 import br.com.escola.model.Student;
 import br.com.escola.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,40 +17,29 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins="*")
-@Slf4j
 public class StudentController {
 
     @Autowired
     private StudentService studentService;
-    @Autowired
-    private ModelMapper modelMapper;
 
     @GetMapping("/student/{id}")
     @Operation(summary = "Find a student",description = "Returns a student by their id")
-    public ResponseEntity getStudent(@PathVariable Long id) {
-        return studentService.findById(id).isPresent() ?
-                ResponseEntity.ok().body(modelMapper.map(studentService.findById(id),StudentDTO.class))
-                :
-                ResponseEntity.status(HttpStatus.FORBIDDEN).body("CONTROLLER");
+    public ResponseEntity<StudentDTO> getStudent(@PathVariable Long id) {
+        return ResponseEntity.ok().body(studentService.convertToDTO(studentService.findById(id)));
     }
 
     @PutMapping("update/student/{id}")
     @Operation(summary = "Update a student by their id",description = "Update a student by their id (important to put all student information)")
-    public ResponseEntity updateStudent(@RequestBody Student student, @PathVariable Long id) {
+    public ResponseEntity<StudentDTO> updateStudent(@RequestBody StudentDTO studentDTO, @PathVariable Long id) {
+        Student student = studentService.convertToEntity(studentDTO);
         student.setId(id);
-        return studentService.findById(id).isPresent() ?
-                ResponseEntity.ok().body(modelMapper.map(studentService.updateStudent(student),StudentDTO.class))
-                :
-                ResponseEntity.status(HttpStatus.FORBIDDEN).body("Student not found");
+        return ResponseEntity.ok().body(studentService.convertToDTO(student));
     }
 
     @GetMapping("/students")
     @Operation(summary = "Find all students",description = "Returns all information for each student that is registered in the database")
-    public ResponseEntity getStudents() {
-        return studentService.getStudents().size() > 0 ?
-                ResponseEntity.ok().body(modelMapper.map(studentService.getStudents(), new TypeToken<List<StudentDTO>>() {}.getType()))
-                :
-                ResponseEntity.status(HttpStatus.FORBIDDEN).body("We dont have students yet");
+    public ResponseEntity<List<StudentDTO>> getStudents() {
+        return ResponseEntity.ok().body(studentService.convertToListDTO(studentService.getAllStudents()));
     }
 
     @PostMapping(value = "/register/student")

@@ -9,6 +9,7 @@ import br.com.escola.model.Student;
 import br.com.escola.repository.StudentRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
@@ -30,6 +31,10 @@ public class StudentService {
     public StudentDTO convertToDTO(Student student){
         return modelMapper.map(student,StudentDTO.class);
     }
+    public List<StudentDTO> convertToListDTO(List<Student> studentList){
+        return modelMapper.map(studentList, new TypeToken<List<StudentDTO>>() {}.getType());
+    }
+
     public Student convertToEntity(StudentDTO studentDTO){
         return modelMapper.map(studentDTO,Student.class);
     }
@@ -44,17 +49,17 @@ public class StudentService {
                 null : String.valueOf(studentRepository.findByEmail(email).getEmail());
     }
 
-    public Optional<Student> findById(Long id) {
-        return Optional.ofNullable(studentRepository.findById(id).orElseThrow(
-                ()-> new NotFoundException(ErrorDescription.STUDENT_NOT_FOUND.getErrorDescription())));
+    public Student findById(Long id) {
+        return studentRepository.findById(id).orElseThrow(
+                ()-> new NotFoundException(ErrorDescription.STUDENT_NOT_FOUND.getErrorDescription()));
     }
 
-    public List<Student> getStudents() {
+    public List<Student> getAllStudents() {
         return studentRepository.findAll();
     }
 
     public Student updateStudent(Student student) {
-        student.setSchoolClass(findById(student.getId()).get().getSchoolClass());
+        student.setSchoolClass(findById(student.getId()).getSchoolClass());
         return studentRepository.save(student);
     }
 
