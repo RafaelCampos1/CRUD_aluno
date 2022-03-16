@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -28,17 +30,17 @@ public class StudentController {
     @GetMapping("/student/{id}")
     @Operation(summary = "Find a student",description = "Returns a student by their id")
     public ResponseEntity getStudent(@PathVariable Long id) {
-        return studentService.getStudent(id).isPresent() ?
-                ResponseEntity.ok().body(modelMapper.map(studentService.getStudent(id),StudentDTO.class))
+        return studentService.findById(id).isPresent() ?
+                ResponseEntity.ok().body(modelMapper.map(studentService.findById(id),StudentDTO.class))
                 :
-                ResponseEntity.status(HttpStatus.FORBIDDEN).body("Student not found");
+                ResponseEntity.status(HttpStatus.FORBIDDEN).body("CONTROLLER");
     }
 
     @PutMapping("update/student/{id}")
     @Operation(summary = "Update a student by their id",description = "Update a student by their id (important to put all student information)")
     public ResponseEntity updateStudent(@RequestBody Student student, @PathVariable Long id) {
         student.setId(id);
-        return studentService.getStudent(id).isPresent() ?
+        return studentService.findById(id).isPresent() ?
                 ResponseEntity.ok().body(modelMapper.map(studentService.updateStudent(student),StudentDTO.class))
                 :
                 ResponseEntity.status(HttpStatus.FORBIDDEN).body("Student not found");
@@ -55,12 +57,9 @@ public class StudentController {
 
     @PostMapping(value = "/register/student")
     @Operation(summary = "Register a student",description = "Register a student. Important to put all student information (without the id)")
-    public ResponseEntity saveStudent(@RequestBody Student student) {
-        try{
-            return ResponseEntity.ok().body(modelMapper.map(studentService.saveStudent(student), StudentDTO.class));
-        }catch(BusinessException exception){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
+    public ResponseEntity<StudentDTO> saveStudent(@Valid @RequestBody StudentDTO studentDTO) {
+        Student student = studentService.saveStudent(studentService.convertToEntity(studentDTO));
+            return new ResponseEntity<>(studentService.convertToDTO(student), HttpStatus.CREATED);
         }
-    }
 
 }

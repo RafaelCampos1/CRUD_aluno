@@ -1,11 +1,15 @@
 package br.com.escola.service;
 
+import br.com.escola.dto.StudentDTO;
 import br.com.escola.enums.ErrorDescription;
 import br.com.escola.exception.BusinessException;
+import br.com.escola.exceptionhandler.NotFoundException;
 import br.com.escola.model.SchoolClass;
 import br.com.escola.model.Student;
 import br.com.escola.repository.StudentRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -15,10 +19,19 @@ import java.util.*;
 public class StudentService {
     private final StudentRepository studentRepository;
     private final SchoolClassService schoolClassService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     public StudentService(StudentRepository studentRepository, SchoolClassService schoolClassService) {
         this.studentRepository = studentRepository;
         this.schoolClassService = schoolClassService;
+    }
+
+    public StudentDTO convertToDTO(Student student){
+        return modelMapper.map(student,StudentDTO.class);
+    }
+    public Student convertToEntity(StudentDTO studentDTO){
+        return modelMapper.map(studentDTO,Student.class);
     }
 
     public String getStudentByCpf(String cpf) {
@@ -31,10 +44,9 @@ public class StudentService {
                 null : String.valueOf(studentRepository.findByEmail(email).getEmail());
     }
 
-    public Optional<Student> getStudent(Long id) {
-        return studentRepository.findById(id).isPresent() ?
-                studentRepository.findById(id) :
-                Optional.empty();
+    public Optional<Student> findById(Long id) {
+        return Optional.ofNullable(studentRepository.findById(id).orElseThrow(
+                ()-> new NotFoundException(ErrorDescription.STUDENT_NOT_FOUND.getErrorDescription())));
     }
 
     public List<Student> getStudents() {
@@ -42,11 +54,12 @@ public class StudentService {
     }
 
     public Student updateStudent(Student student) {
-        student.setSchoolClass(getStudent(student.getId()).get().getSchoolClass());
+        student.setSchoolClass(findById(student.getId()).get().getSchoolClass());
         return studentRepository.save(student);
     }
 
     public Student saveStudent(Student student) {
+        validateStudent(student);
         Optional<SchoolClass> schoolClassLessFive = schoolClassService.getSchoolClasses().stream()
                 .filter(SC -> SC.getStudentList().size() < 5).findFirst();
 
