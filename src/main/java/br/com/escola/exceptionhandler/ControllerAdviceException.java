@@ -16,12 +16,6 @@ import java.util.List;
 @RestControllerAdvice
 public class ControllerAdviceException {
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<MessageExceptionHandler> jsonParseError(){
-        MessageExceptionHandler costumeError = new MessageExceptionHandler(
-                new Date(), HttpStatus.BAD_REQUEST.value(),"Invalid request, probably the parameters are invalid");
-        return new ResponseEntity<>(costumeError,HttpStatus.BAD_REQUEST);
-    }
 
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<MessageExceptionHandler> resourceAlreadyExists(ConflictException exception) {
@@ -51,6 +45,13 @@ public class ControllerAdviceException {
                 new Date(), HttpStatus.BAD_REQUEST.value(), stringBuilder.toString());
 
         return new ResponseEntity<>(messageExceptionHandler, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<MessageExceptionHandler> jsonParseError(){
+        MessageExceptionHandler costumeError = new MessageExceptionHandler(
+                new Date(), HttpStatus.BAD_REQUEST.value(),"Invalid request, probably the parameters are invalid");
+        return new ResponseEntity<>(costumeError,HttpStatus.BAD_REQUEST);
     }
 }
 

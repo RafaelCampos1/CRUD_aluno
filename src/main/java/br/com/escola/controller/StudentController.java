@@ -45,8 +45,6 @@ public class StudentController {
     @PostMapping(value = "/register/student")
     @Operation(summary = "Register a student",description = "Register a student. Important to put all student information (without the id)")
     public ResponseEntity<StudentDTO> saveStudent(@Valid @RequestBody StudentDTO studentDTO) {
-        if(studentDTO == null)
-            log.info("qqqqqqq");
         Student student = studentService.saveStudent(studentService.convertToEntity(studentDTO));
             return new ResponseEntity<>(studentService.convertToDTO(student), HttpStatus.CREATED);
         }

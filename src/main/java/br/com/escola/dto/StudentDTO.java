@@ -19,6 +19,7 @@ public class StudentDTO {
     private String email;
     @NotBlank(message = "{cpf.not.blank}")
     private String cpf;
+    @NotBlank(message = "{registration.not.blank}")
     private String registration;
     private String schoolClass;
 
@@ -35,6 +36,7 @@ public class StudentDTO {
     public String getSchoolClass() {
         return schoolClass;
     }
+
     @JsonIgnore
     public void setSchoolClass(String schoolClass) {
         this.schoolClass = schoolClass;
