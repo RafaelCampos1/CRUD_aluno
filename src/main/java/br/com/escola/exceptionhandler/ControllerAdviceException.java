@@ -1,5 +1,6 @@
 package br.com.escola.exceptionhandler;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -15,9 +16,15 @@ import java.util.List;
 @RestControllerAdvice
 public class ControllerAdviceException {
 
-    @ResponseBody
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<MessageExceptionHandler> productNotFound(Exception exception){
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<MessageExceptionHandler> resourceAlreadyExists(ConflictException exception) {
+        MessageExceptionHandler costumeError = new MessageExceptionHandler(
+                new Date(), HttpStatus.CONFLICT.value(),exception.getMessage());
+        return new ResponseEntity<>(costumeError,HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<MessageExceptionHandler> entityNotFound(NotFoundException exception){
         MessageExceptionHandler costumeError = new MessageExceptionHandler(
                 new Date(), HttpStatus.NOT_FOUND.value(),exception.getMessage());
         return new ResponseEntity<>(costumeError,HttpStatus.NOT_FOUND);

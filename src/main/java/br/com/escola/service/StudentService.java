@@ -2,7 +2,7 @@ package br.com.escola.service;
 
 import br.com.escola.dto.StudentDTO;
 import br.com.escola.enums.ErrorDescription;
-import br.com.escola.exception.BusinessException;
+import br.com.escola.exceptionhandler.ConflictException;
 import br.com.escola.exceptionhandler.NotFoundException;
 import br.com.escola.model.SchoolClass;
 import br.com.escola.model.Student;
@@ -31,6 +31,7 @@ public class StudentService {
     public StudentDTO convertToDTO(Student student){
         return modelMapper.map(student,StudentDTO.class);
     }
+
     public List<StudentDTO> convertToListDTO(List<Student> studentList){
         return modelMapper.map(studentList, new TypeToken<List<StudentDTO>>() {}.getType());
     }
@@ -51,7 +52,7 @@ public class StudentService {
 
     public Student findById(Long id) {
         return studentRepository.findById(id).orElseThrow(
-                ()-> new NotFoundException(ErrorDescription.STUDENT_NOT_FOUND.getErrorDescription()));
+                ()-> new NotFoundException(ErrorDescription.STUDENT_NOT_FOUND));
     }
 
     public List<Student> getAllStudents() {
@@ -71,7 +72,6 @@ public class StudentService {
         List<Student> listStudent = schoolClassLessFive.isPresent() ?
                 schoolClassLessFive.get().getStudentList() : new ArrayList<>();
 
-
         if (schoolClassLessFive.isEmpty() ) {
             SchoolClass newSchoolClass = new SchoolClass();
             newSchoolClass.setName(getNewSchoolClassName());
@@ -84,9 +84,6 @@ public class StudentService {
         }else {
             student.setSchoolClass(schoolClassLessFive.get().getName());
         }
-        //pegar os 60 alunos adicionar mais um e dps devolver p banco salvar
-
-        //quero apenas adicionar um no final, sem ter que pegar todos os alunos
         listStudent.add(student);
         studentRepository.save(student);
         schoolClassService.saveStudentOnExistingClass(listStudent);
@@ -96,10 +93,10 @@ public class StudentService {
     public void validateStudent(Student student){
         String studentCpf = getStudentByCpf(student.getCpf());
         if(student.getCpf().equals(studentCpf))
-            throw new BusinessException(ErrorDescription.SAME_CPF);
+            throw new ConflictException(ErrorDescription.SAME_CPF);
         String studentEmail = getStudentByEmail(student.getEmail());
         if(student.getEmail().equals(studentEmail))
-            throw new BusinessException(ErrorDescription.SAME_EMAIL);
+            throw new ConflictException(ErrorDescription.SAME_EMAIL);
     }
 
     public String getNewSchoolClassName(){

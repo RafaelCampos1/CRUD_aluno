@@ -33,7 +33,7 @@ public class StudentController {
     public ResponseEntity<StudentDTO> updateStudent(@RequestBody StudentDTO studentDTO, @PathVariable Long id) {
         Student student = studentService.convertToEntity(studentDTO);
         student.setId(id);
-        return ResponseEntity.ok().body(studentService.convertToDTO(student));
+        return ResponseEntity.ok().body(studentService.convertToDTO(studentService.updateStudent(student)));
     }
 
     @GetMapping("/students")

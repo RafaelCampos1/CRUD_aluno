@@ -1,16 +1,13 @@
 package br.com.escola.exceptionhandler;
 
-
-import br.com.escola.enums.ErrorDescription;
-import lombok.Data;
-
+import lombok.Getter;
 import java.util.Date;
 
-@Data
+@Getter
 public class MessageExceptionHandler {
-    private Date timestamp;
-    private Integer status;
-    private String message;
+    private final Date timestamp;
+    private final Integer status;
+    private final String message;
 
     public MessageExceptionHandler(Date timestamp, int status, String message) {
         this.timestamp = timestamp;
