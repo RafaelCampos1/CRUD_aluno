@@ -31,5 +31,12 @@ public class StudentDTO {
     public void setId(Long id) {
         Id = id;
     }
-
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public String getSchoolClass() {
+        return schoolClass;
+    }
+    @JsonIgnore
+    public void setSchoolClass(String schoolClass) {
+        this.schoolClass = schoolClass;
+    }
 }
