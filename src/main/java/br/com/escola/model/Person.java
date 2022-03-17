@@ -13,7 +13,6 @@ import javax.persistence.MappedSuperclass;
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long Id;
     private String firstName;
     private String lastName;

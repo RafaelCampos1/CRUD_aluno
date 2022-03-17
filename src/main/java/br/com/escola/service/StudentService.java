@@ -40,22 +40,23 @@ public class StudentService {
         return modelMapper.map(studentDTO,Student.class);
     }
 
-    public String getStudentByCpf(String cpf) {
-        return (studentRepository.findByCpf(cpf) == null) ?
-                null : String.valueOf(studentRepository.findByCpf(cpf).getCpf());
+    public void findStudentByCpf(String cpf) {
+        if (studentRepository.findByCpf(cpf) != null)
+            throw new ConflictException(ErrorDescription.SAME_CPF);
     }
 
-    public String getStudentByEmail(String email) {
-        return (studentRepository.findByEmail(email) == null) ?
-                null : String.valueOf(studentRepository.findByEmail(email).getEmail());
+    public void findStudentByEmail(String email) {
+        if (studentRepository.findByEmail(email) != null)
+            throw new ConflictException(ErrorDescription.SAME_EMAIL);
     }
 
     public Student findById(Long id) {
-        return studentRepository.findById(id).orElseThrow(
-                ()-> new NotFoundException(ErrorDescription.STUDENT_NOT_FOUND));
+        log.info("dsadsadsa");
+        return studentRepository.findById(id)
+                .orElseThrow(()-> new NotFoundException(ErrorDescription.STUDENT_NOT_FOUND));
     }
 
-    public List<Student> getAllStudents() {
+    public List<Student> findAllStudents() {
         return studentRepository.findAll();
     }
 
@@ -65,8 +66,8 @@ public class StudentService {
     }
 
     public Student saveStudent(Student student) {
-        validateStudent(student);
-        Optional<SchoolClass> schoolClassLessFive = schoolClassService.getSchoolClasses().stream()
+       validateStudent(student);
+        Optional<SchoolClass> schoolClassLessFive = schoolClassService.findAllSchoolClasses().stream()
                 .filter(SC -> SC.getStudentList().size() < 5).findFirst();
 
         List<Student> listStudent = schoolClassLessFive.isPresent() ?
@@ -76,7 +77,7 @@ public class StudentService {
             SchoolClass newSchoolClass = new SchoolClass();
             newSchoolClass.setName(getNewSchoolClassName());
             newSchoolClass.setStudentList( listStudent);
-            student.setSchoolClass(schoolClassService.getSchoolClassNameInDESC());
+            student.setSchoolClass(schoolClassService.findSchoolClassNameInDESC());
             student.setSchoolClass(newSchoolClass.getName());
             studentRepository.save(student);
             schoolClassService.saveSchoolClass(newSchoolClass);
@@ -91,16 +92,12 @@ public class StudentService {
     }
 
     public void validateStudent(Student student){
-        String studentCpf = getStudentByCpf(student.getCpf());
-        if(student.getCpf().equals(studentCpf))
-            throw new ConflictException(ErrorDescription.SAME_CPF);
-        String studentEmail = getStudentByEmail(student.getEmail());
-        if(student.getEmail().equals(studentEmail))
-            throw new ConflictException(ErrorDescription.SAME_EMAIL);
+        findStudentByCpf(student.getCpf());
+        findStudentByEmail(student.getEmail());
     }
 
     public String getNewSchoolClassName(){
-        String schoolClassNameInDESC = schoolClassService.getSchoolClassNameInDESC();
+        String schoolClassNameInDESC = schoolClassService.findSchoolClassNameInDESC();
         String lastWord = String.valueOf(schoolClassNameInDESC.charAt(schoolClassNameInDESC.length() - 1));
         byte[] bytes = lastWord.getBytes(StandardCharsets.US_ASCII);
         int word = bytes[0] + 1;

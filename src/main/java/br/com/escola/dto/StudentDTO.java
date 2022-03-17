@@ -1,11 +1,14 @@
 package br.com.escola.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 
 @Data
 public class StudentDTO {
+
 
     private Long Id;
     @NotBlank(message = "{firstName.not.blank}")
@@ -18,5 +21,15 @@ public class StudentDTO {
     private String cpf;
     private String registration;
     private String schoolClass;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public Long getId() {
+        return Id;
+    }
+
+    @JsonIgnore
+    public void setId(Long id) {
+        Id = id;
+    }
 
 }

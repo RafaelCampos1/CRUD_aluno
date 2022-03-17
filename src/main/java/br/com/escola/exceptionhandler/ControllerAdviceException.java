@@ -1,8 +1,8 @@
 package br.com.escola.exceptionhandler;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,6 +15,13 @@ import java.util.List;
 
 @RestControllerAdvice
 public class ControllerAdviceException {
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<MessageExceptionHandler> jsonParseError(){
+        MessageExceptionHandler costumeError = new MessageExceptionHandler(
+                new Date(), HttpStatus.BAD_REQUEST.value(),"Invalid request, probably the parameters are invalid");
+        return new ResponseEntity<>(costumeError,HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<MessageExceptionHandler> resourceAlreadyExists(ConflictException exception) {
@@ -36,7 +43,7 @@ public class ControllerAdviceException {
         BindingResult bindingResult = notValidException.getBindingResult();
         List<FieldError> fieldErrorList = bindingResult.getFieldErrors();
 
-        StringBuilder stringBuilder = new StringBuilder("os campos seguintes nao podem ser nulos: ");
+        StringBuilder stringBuilder = new StringBuilder("the following fields cannot be null: ");
 
         fieldErrorList.forEach(FieldError -> stringBuilder.append(FieldError.getField()).append(" "));
 
