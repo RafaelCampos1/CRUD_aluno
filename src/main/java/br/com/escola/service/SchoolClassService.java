@@ -38,13 +38,13 @@ public class SchoolClassService {
     }
 
     public SchoolClass findSchoolByName(String name) {
-        return schoolClassRepository.findByName(name)
+        return schoolClassRepository.findBySchoolClassName(name)
                 .orElseThrow(()-> new NotFoundException(ErrorDescription.SCHOOL_CLASS_NOT_FOUND));
     }
 
     public String findSchoolClassNameInDESC(){
-        return schoolClassRepository.findAll(Sort.by(Sort.Direction.DESC, "name")).isEmpty() ? "Turma @" :
-                schoolClassRepository.findAll(Sort.by(Sort.Direction.DESC, "name")).get(0).getName();
+        return schoolClassRepository.findAll(Sort.by(Sort.Direction.DESC, "schoolClassName")).isEmpty() ? "Turma @" :
+                schoolClassRepository.findAll(Sort.by(Sort.Direction.DESC, "schoolClassName")).get(0).getSchoolClassName();
     }
 
     public List<SchoolClass> findAllSchoolClasses(){

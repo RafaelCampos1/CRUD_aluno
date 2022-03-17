@@ -75,15 +75,15 @@ public class StudentService {
 
         if (schoolClassLessFive.isEmpty() ) {
             SchoolClass newSchoolClass = new SchoolClass();
-            newSchoolClass.setName(getNewSchoolClassName());
+            newSchoolClass.setSchoolClassName(getNewSchoolClassName());
             newSchoolClass.setStudentList( listStudent);
             student.setSchoolClass(schoolClassService.findSchoolClassNameInDESC());
-            student.setSchoolClass(newSchoolClass.getName());
+            student.setSchoolClass(newSchoolClass.getSchoolClassName());
             studentRepository.save(student);
             schoolClassService.saveSchoolClass(newSchoolClass);
 
         }else {
-            student.setSchoolClass(schoolClassLessFive.get().getName());
+            student.setSchoolClass(schoolClassLessFive.get().getSchoolClassName());
         }
         listStudent.add(student);
         studentRepository.save(student);

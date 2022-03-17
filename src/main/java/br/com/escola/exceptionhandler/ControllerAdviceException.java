@@ -6,6 +6,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -47,11 +48,13 @@ public class ControllerAdviceException {
         return new ResponseEntity<>(messageExceptionHandler, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ExceptionHandler({HttpMessageNotReadableException.class,MissingServletRequestParameterException.class})
     public ResponseEntity<MessageExceptionHandler> jsonParseError(){
         MessageExceptionHandler costumeError = new MessageExceptionHandler(
                 new Date(), HttpStatus.BAD_REQUEST.value(),"Invalid request, probably the parameters are invalid");
         return new ResponseEntity<>(costumeError,HttpStatus.BAD_REQUEST);
     }
+
+
 }
 

@@ -15,9 +15,9 @@ public class SchoolClassController {
     @Autowired
     private SchoolClassService schoolClassService;
 
-    @GetMapping("find/school")
+    @GetMapping("find/school/{name}")
     @Operation(summary = "Find a school class by name",description = "Returns a school class by their name")
-    public ResponseEntity<SchoolClassDTO> getSchoolClass(@RequestParam String name) {
+    public ResponseEntity<SchoolClassDTO> getSchoolClass(@PathVariable String name) {
         return ResponseEntity.ok().body(schoolClassService.convertToDTO(schoolClassService.findSchoolByName(name)));
     }
 
