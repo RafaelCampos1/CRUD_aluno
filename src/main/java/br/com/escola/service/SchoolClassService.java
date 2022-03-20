@@ -17,11 +17,10 @@ import java.util.List;
 @Service
 public class SchoolClassService {
 
+
     private final SchoolClassRepository schoolClassRepository;
     @Autowired
     private ModelMapper modelMapper;
-
-
 
     public SchoolClassService(SchoolClassRepository schoolClassRepository) {
         this.schoolClassRepository = schoolClassRepository;

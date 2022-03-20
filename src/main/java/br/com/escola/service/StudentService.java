@@ -28,6 +28,8 @@ public class StudentService {
         this.schoolClassService = schoolClassService;
     }
 
+
+
     public StudentDTO convertToDTO(Student student){
         return modelMapper.map(student,StudentDTO.class);
     }
@@ -47,11 +49,10 @@ public class StudentService {
 
     public void findStudentByEmail(String email) {
         if (studentRepository.findByEmail(email) != null)
-            throw new ConflictException(ErrorDescription.SAME_EMAIL);
+            throw new ConflictException(ErrorDescription.STUDENT_NOT_FOUND);
     }
 
     public Student findById(Long id) {
-        log.info("dsadsadsa");
         return studentRepository.findById(id)
                 .orElseThrow(()-> new NotFoundException(ErrorDescription.STUDENT_NOT_FOUND));
     }
@@ -61,12 +62,14 @@ public class StudentService {
     }
 
     public Student updateStudent(Student student) {
+        validateStudent(student);
         student.setSchoolClass(findById(student.getId()).getSchoolClass());
         return studentRepository.save(student);
     }
 
     public Student saveStudent(Student student) {
        validateStudent(student);
+
         Optional<SchoolClass> schoolClassLessFive = schoolClassService.findAllSchoolClasses().stream()
                 .filter(SC -> SC.getStudentList().size() < 5).findFirst();
 
@@ -85,6 +88,7 @@ public class StudentService {
         }else {
             student.setSchoolClass(schoolClassLessFive.get().getSchoolClassName());
         }
+
         listStudent.add(student);
         studentRepository.save(student);
         schoolClassService.saveStudentOnExistingClass(listStudent);
