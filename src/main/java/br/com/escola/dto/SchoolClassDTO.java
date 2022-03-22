@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 public class SchoolClassDTO {
 
-
     private Long Id;
     private String schoolClassName;
     private List<Student> studentList = new ArrayList<>();

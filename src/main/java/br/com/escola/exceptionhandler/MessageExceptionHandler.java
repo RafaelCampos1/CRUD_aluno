@@ -1,6 +1,7 @@
 package br.com.escola.exceptionhandler;
 
 import lombok.Getter;
+
 import java.util.Date;
 
 @Getter

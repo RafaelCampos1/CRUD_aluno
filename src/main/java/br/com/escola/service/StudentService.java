@@ -10,7 +10,7 @@ import br.com.escola.repository.StudentRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -20,36 +20,32 @@ import java.util.*;
 public class StudentService {
     private final StudentRepository studentRepository;
     private final SchoolClassService schoolClassService;
-    @Autowired
-    private ModelMapper modelMapper;
 
-    public StudentService(StudentRepository studentRepository, SchoolClassService schoolClassService) {
+    public StudentService(StudentRepository studentRepository, SchoolClassService schoolClassService, ModelMapper modelMapper) {
         this.studentRepository = studentRepository;
         this.schoolClassService = schoolClassService;
     }
 
-
-
     public StudentDTO convertToDTO(Student student){
-        return modelMapper.map(student,StudentDTO.class);
+        return new ModelMapper().map(student,StudentDTO.class);
     }
 
     public List<StudentDTO> convertToListDTO(List<Student> studentList){
-        return modelMapper.map(studentList, new TypeToken<List<StudentDTO>>() {}.getType());
+        return new ModelMapper().map(studentList, new TypeToken<List<StudentDTO>>() {}.getType());
     }
 
     public Student convertToEntity(StudentDTO studentDTO){
-        return modelMapper.map(studentDTO,Student.class);
+        return new ModelMapper().map(studentDTO,Student.class);
     }
 
-    public void findStudentByCpf(String cpf) {
-        if (studentRepository.findByCpf(cpf) != null)
+    public void findStudentByCpf(Student student) {
+        if (studentRepository.findByCpf(student.getCpf()) != null)
             throw new ConflictException(ErrorDescription.SAME_CPF);
     }
 
-    public void findStudentByEmail(String email) {
-        if (studentRepository.findByEmail(email) != null)
-            throw new ConflictException(ErrorDescription.STUDENT_NOT_FOUND);
+    public void findStudentByEmail(Student student) {
+        if (studentRepository.findByEmail(student.getEmail()) != null)
+            throw new ConflictException(ErrorDescription.SAME_EMAIL);
     }
 
     public Student findById(Long id) {
@@ -62,17 +58,17 @@ public class StudentService {
     }
 
     public Student updateStudent(Student student) {
-        validateStudent(student);
+        validateStudentOnUpdate(student);
         student.setSchoolClass(findById(student.getId()).getSchoolClass());
         return studentRepository.save(student);
     }
 
     public Student saveStudent(Student student) {
-       validateStudent(student);
+        validateStudentOnSave(student);
 
         Optional<SchoolClass> schoolClassLessFive = schoolClassService.findAllSchoolClasses().stream()
                 .filter(SC -> SC.getStudentList().size() < 5).findFirst();
-
+            log.info("dsadsadsadsa");
         List<Student> listStudent = schoolClassLessFive.isPresent() ?
                 schoolClassLessFive.get().getStudentList() : new ArrayList<>();
 
@@ -84,7 +80,6 @@ public class StudentService {
             student.setSchoolClass(newSchoolClass.getSchoolClassName());
             studentRepository.save(student);
             schoolClassService.saveSchoolClass(newSchoolClass);
-
         }else {
             student.setSchoolClass(schoolClassLessFive.get().getSchoolClassName());
         }
@@ -95,9 +90,19 @@ public class StudentService {
         return student;
     }
 
-    public void validateStudent(Student student){
-        findStudentByCpf(student.getCpf());
-        findStudentByEmail(student.getEmail());
+    public void validateStudentOnUpdate(Student student){
+        Student studentWithSameCpf = studentRepository.findByCpf(student.getCpf());
+        if(studentWithSameCpf!=null && !studentWithSameCpf.getId().equals(student.getId()) )
+            findStudentByCpf(student);
+
+        Student studentWithSameEmail = studentRepository.findByEmail(student.getEmail());
+        if(studentWithSameEmail!=null && !studentWithSameEmail.getId().equals(student.getId()) )
+            findStudentByEmail(student);
+    }
+
+    public void validateStudentOnSave(Student student){
+        findStudentByCpf(student);
+        findStudentByEmail(student);
     }
 
     public String getNewSchoolClassName(){

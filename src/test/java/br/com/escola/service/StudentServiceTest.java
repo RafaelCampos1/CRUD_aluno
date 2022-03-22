@@ -4,6 +4,7 @@ import br.com.escola.dto.StudentDTO;
 import br.com.escola.enums.ErrorDescription;
 import br.com.escola.exceptionhandler.ConflictException;
 import br.com.escola.exceptionhandler.NotFoundException;
+import br.com.escola.model.SchoolClass;
 import br.com.escola.model.Student;
 import br.com.escola.repository.StudentRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.modelmapper.ModelMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,13 +29,14 @@ class StudentServiceTest {
 
     @Mock
     StudentRepository studentRepository;
+    @Mock
     SchoolClassService schoolClassService;
 
     @InjectMocks//preciso testar os metodos
     StudentService studentService;
 
     private Student student;
-    private StudentDTO studentDTO;
+
 
     //executado antes de qualquer coisa da classe
     @BeforeEach
@@ -44,32 +47,57 @@ class StudentServiceTest {
 
     @Test
     void convertToDTO() {
-     //   Mockito.when()
+        Mockito.when(studentRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(student));
+        Student student = studentService.findById(1L);
+        StudentDTO studentDTO = studentService.convertToDTO(student);
+        assertNotNull(studentDTO);
+        assertEquals(StudentDTO.class,studentDTO.getClass());
+
     }
 
     @Test
     void convertToListDTO() {
+        Mockito.when(studentRepository.findAll()).thenReturn(List.of(student));
+        List<Student> studentList = studentService.findAllStudents();
+        List<StudentDTO> studentDTOList = studentService.convertToListDTO(studentList);
+        assertNotNull(studentDTOList);
+        assertEquals(StudentDTO.class,studentDTOList.get(0).getClass());
     }
 
     @Test
     void convertToEntity() {
+        Mockito.when(studentRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(student));
+        StudentDTO studentDTO = new ModelMapper().map(studentService.findById(1L), StudentDTO.class);
+        Student studentResponse = studentService.convertToEntity(studentDTO);
+        assertNotNull(studentResponse);
+        assertEquals(Student.class,studentResponse.getClass());
+
+    }
+
+    @Test
+    void whenFindAStudentBySameEmailReturnAConflict() {
+        Mockito.when(studentRepository.findByEmail(Mockito.anyString()))
+                .thenReturn(student);
+        ConflictException conflictException = assertThrows(ConflictException.class, () -> {
+            studentService.findStudentByEmail(student);
+        });
+        Assertions.assertEquals(ErrorDescription.SAME_EMAIL.getErrorDescription(),conflictException.getMessage());
     }
 
     @Test
     void whenFindAStudentBySameCpfReturnAConflict() {
-        Mockito.when(studentRepository.findByEmail(Mockito.anyString()))
+        Mockito.when(studentRepository.findByCpf(Mockito.anyString()))
                 .thenReturn(student);
         ConflictException conflictException = assertThrows(ConflictException.class, () -> {
-            studentService.findStudentByEmail(student.getEmail());
+            studentService.findStudentByCpf(student);
         });
-        Assertions.assertEquals(ErrorDescription.SAME_EMAIL.getErrorDescription(),conflictException.getMessage());
+        Assertions.assertEquals(ErrorDescription.SAME_CPF.getErrorDescription(),conflictException.getMessage());
     }
 
     @Test
     void whenFindByIdReturnAnStudent() {
         Mockito.when(studentRepository.findById(1L))
                 .thenReturn(Optional.of(student));
-
         Student student = studentService.findById(1L);
         Assertions.assertEquals(Student.class,student.getClass());
         Assertions.assertNotNull(Student.class);
@@ -79,7 +107,6 @@ class StudentServiceTest {
     void whenDontFindByIdReturnAnObjectNotFound() {
         Mockito.when(studentRepository.findById(student.getId()))
                 .thenReturn(Optional.of(student));
-
         NotFoundException notFoundException = assertThrows(NotFoundException.class, () -> {
             studentService.findById(student.getId()+1);
         });
@@ -90,7 +117,6 @@ class StudentServiceTest {
 
     @Test
     void whenFindAllStudentsReturnListOfStudents() {
-        //mockando p dar um save falso
         Mockito.when(studentRepository.findAll()).thenReturn(List.of(student));
         List<Student> studentList = studentService.findAllStudents();
         assertNotNull(studentList);
@@ -101,7 +127,6 @@ class StudentServiceTest {
     void updateStudent() {
         Mockito.when(studentRepository.findById(student.getId())).thenReturn(Optional.of(student));
         Mockito.when(studentRepository.save(student)).thenReturn(student);
-
         Student studentResponse = studentService.updateStudent(student);
         assertNotNull(studentResponse);
         assertEquals(Student.class, studentResponse.getClass());
@@ -109,18 +134,11 @@ class StudentServiceTest {
 
     @Test
     void saveStudent() {
-        Mockito.when(studentRepository.save(student)).thenReturn(student);
+        startSchoolClass();
+    //    Mockito.when(studentRepository.save(student)).thenReturn(student);
 
-        Student studentResponse = studentService.saveStudent(student);
+       // Student studentResponse = studentService.saveStudent(student);
 
-    }
-
-    @Test
-    void validateStudent() {
-    }
-
-    @Test
-    void getNewSchoolClassName() {
     }
 
     private void startStudent(){
@@ -132,6 +150,12 @@ class StudentServiceTest {
         student.setEmail("tetinha");
         student.setSchoolClass("turma A");
         student.setRegistration("Registration mockada");
+    }
+
+    private void startSchoolClass(){
+        SchoolClass schoolClass = new SchoolClass();
+        schoolClass.setId(1L);
+        schoolClass.setSchoolClassName("rafael");
     }
 
 }
