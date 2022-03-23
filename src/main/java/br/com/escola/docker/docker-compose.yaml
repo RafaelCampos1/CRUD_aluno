@@ -1,28 +1,42 @@
-version: '3'
+version: "3"
 
 services:
-  db:
-    image: mysql
-    volumes:
-      - db_data:/var/lib/mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: P1b7JBvP8II4
-      MYSQL_DATABASE: sonarqube
-      MYSQL_USER: sonarqube
-      MYSQL_PASSWORD: P1b7JBvP8II4
-
   sonarqube:
-    depends_on:
-      - db
-    image: sonarqube:latest
-    restart: always
+    image: sonarqube
+    expose:
+      - 9000
     ports:
-      - "9000:9000"
-      - "9092:9092"
+      - "127.0.0.1:9000:9000"
+    networks:
+      - sonarnet
     environment:
-      SONARQUBE_JDBC_USERNAME: sonarqube
-      SONARQUBE_JDBC_PASSWORD: P1b7JBvP8II4
-      SONARQUBE_JDBC_URL: jdbc:mysql://db:3306/sonarqube?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true
+      - sonar.forceAuthentication=false
+      - sonar.jdbc.url=jdbc:postgresql://db:5432/sonar
+      - sonar.jdbc.username=sonar
+      - sonar.jdbc.password=sonar
+    volumes:
+      - sonarqube_conf:/opt/sonarqube/conf
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_bundled-plugins:/opt/sonarqube/lib/bundled-plugins
+  db:
+    image: postgres
+    networks:
+      - sonarnet
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+    volumes:
+      - postgresql:/var/lib/postgresql
+      - postgresql_data:/var/lib/postgresql/data
+
+networks:
+  sonarnet:
+
 volumes:
-  db_data:
+  sonarqube_conf:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_bundled-plugins:
+  postgresql:
+  postgresql_data:
