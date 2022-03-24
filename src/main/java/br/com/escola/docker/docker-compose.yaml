@@ -2,13 +2,16 @@ version: "3"
 
 services:
   sonarqube:
-    image: sonarqube
+    build:
+      context: .
+      dockerfile: Dockerfile.sonar
     expose:
       - 9000
     ports:
       - "127.0.0.1:9000:9000"
+    restart: unless-stopped
     networks:
-      - sonarnet
+      - dev-network
     environment:
       - sonar.forceAuthentication=false
       - sonar.jdbc.url=jdbc:postgresql://db:5432/sonar
@@ -22,7 +25,7 @@ services:
   db:
     image: postgres
     networks:
-      - sonarnet
+      - dev-network
     environment:
       - POSTGRES_USER=sonar
       - POSTGRES_PASSWORD=sonar
@@ -31,7 +34,8 @@ services:
       - postgresql_data:/var/lib/postgresql/data
 
 networks:
-  sonarnet:
+  dev-network:
+
 
 volumes:
   sonarqube_conf:
