@@ -11,10 +11,11 @@
 	<groupId>br.com</groupId>
 	<artifactId>escola</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>escola</name>
+	<name>school</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
+		<sonar.exclusions>src/main/java/com/school/SchoolClassApplication.java</sonar.exclusions>
 	</properties>
 
 	<dependencies>
