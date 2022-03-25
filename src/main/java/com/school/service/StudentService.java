@@ -66,14 +66,15 @@ public class StudentService {
     }
 
     public Student saveStudent(Student student) {
-       validateStudentOnSave(student);
+
+       //validateStudentOnSave(student);
         Optional<SchoolClass> schoolClassLessFive = schoolClassService.findAllSchoolClasses().stream()
                 .filter(schoolClass -> schoolClass.getStudentList().size() < 5).findFirst();
+
         if (schoolClassLessFive.isEmpty() ) {
             SchoolClass newSchoolClass = new SchoolClass();
             newSchoolClass.setSchoolClassName(getNewSchoolClassName());
             newSchoolClass.getStudentList().add(student);
-            student.setSchoolClass(schoolClassService.findSchoolClassNameInDESC());
             student.setSchoolClass(newSchoolClass.getSchoolClassName());
             schoolClassService.saveSchoolClass(newSchoolClass);
             return studentRepository.save(student);
@@ -99,7 +100,11 @@ public class StudentService {
     }
 
     public String getNewSchoolClassName(){
-        String schoolClassNameInDESC = schoolClassService.findSchoolClassNameInDESC();
+        List<SchoolClass> schoolClassList = schoolClassService.findAllSchoolClasses();
+        if(schoolClassList.size()==0){
+            return "School Class A";
+        }
+        String schoolClassNameInDESC = schoolClassList.get(schoolClassList.size()-1).getSchoolClassName();
         String lastWord = String.valueOf(schoolClassNameInDESC.charAt(schoolClassNameInDESC.length() - 1));
         byte[] bytes = lastWord.getBytes(StandardCharsets.US_ASCII);
         int word = bytes[0] + 1;

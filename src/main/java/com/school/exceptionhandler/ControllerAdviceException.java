@@ -29,6 +29,7 @@ public class ControllerAdviceException {
     public ResponseEntity<MessageExceptionHandler> entityNotFound(NotFoundException exception) {
         MessageExceptionHandler costumeError = new MessageExceptionHandler(
                 new Date(), HttpStatus.NOT_FOUND.value(), exception.getMessage());
+
         return new ResponseEntity<>(costumeError, HttpStatus.NOT_FOUND);
     }
 
@@ -48,12 +49,12 @@ public class ControllerAdviceException {
         return new ResponseEntity<>(messageExceptionHandler, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({HttpMessageNotReadableException.class, MissingServletRequestParameterException.class})
+    /*@ExceptionHandler({HttpMessageNotReadableException.class, MissingServletRequestParameterException.class})
     public ResponseEntity<MessageExceptionHandler> jsonParseError() {
         MessageExceptionHandler costumeError = new MessageExceptionHandler(
                 new Date(), HttpStatus.BAD_REQUEST.value(), "Invalid request, probably the parameters are invalid");
         return new ResponseEntity<>(costumeError, HttpStatus.BAD_REQUEST);
-    }
+    }*/
 
 
 }

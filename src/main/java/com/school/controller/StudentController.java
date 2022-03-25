@@ -5,7 +5,6 @@ import com.school.model.Student;
 import com.school.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +17,12 @@ import java.util.List;
 @Slf4j
 public class StudentController {
 
-    @Autowired
-    private StudentService studentService;
+
+    private final StudentService studentService;
+
+    public StudentController(StudentService studentService) {
+        this.studentService = studentService;
+    }
 
     @GetMapping("/student/{id}")
     @Operation(summary = "Find a student",description = "Returns a student by their id")

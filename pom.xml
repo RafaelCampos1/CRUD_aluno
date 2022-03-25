@@ -15,7 +15,12 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
-		<sonar.exclusions>src/main/java/com/school/SchoolClassApplication.java</sonar.exclusions>
+		<sonar.exclusions>
+			src/main/java/com/school/config/ModelMapperConfig.java,
+			src/main/java/com/school/SchoolClassApplication.java
+		</sonar.exclusions>
+
+
 	</properties>
 
 	<dependencies>

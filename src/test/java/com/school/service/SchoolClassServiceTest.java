@@ -1,7 +1,6 @@
 package com.school.service;
 
 import com.school.dto.SchoolClassDTO;
-import com.school.dto.StudentDTO;
 import com.school.model.SchoolClass;
 import com.school.model.Student;
 import com.school.repository.SchoolClassRepository;
@@ -9,15 +8,10 @@ import com.school.repository.StudentRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.modelmapper.ModelMapper;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,6 +31,7 @@ class SchoolClassServiceTest {
 
     private SchoolClass schoolClass;
     private Student student;
+
 
     @BeforeEach
     void setUp() {
@@ -73,14 +68,28 @@ class SchoolClassServiceTest {
 
     @Test
     void findSchoolByName() {
+        Mockito.when(schoolClassRepository.findBySchoolClassName("School Class A")).thenReturn(schoolClass);
+        SchoolClass responseSchoolClass = schoolClassService.findSchoolByName("School Class A");
+        assertNotNull(responseSchoolClass);
+        assertEquals(schoolClass, responseSchoolClass);
     }
+
+
+
 
     @Test
     void findSchoolClassNameInDESC() {
+
+
+
     }
 
     @Test
     void findAllSchoolClasses() {
+        Mockito.when(schoolClassService.findAllSchoolClasses()).thenReturn(List.of(schoolClass));
+        List<SchoolClass> schoolClassList = schoolClassService.findAllSchoolClasses();
+        assertNotNull(schoolClassList);
+        assertEquals(SchoolClass.class,schoolClassList.get(0).getClass());
     }
 
     @Test
