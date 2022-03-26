@@ -7,6 +7,7 @@ import com.school.model.SchoolClass;
 import com.school.repository.SchoolClassRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,11 +16,9 @@ import java.util.Optional;
 @Service
 public class SchoolClassService {
 
-    private final SchoolClassRepository schoolClassRepository;
+    @Autowired
+    SchoolClassRepository schoolClassRepository;
 
-    public SchoolClassService(SchoolClassRepository schoolClassRepository) {
-        this.schoolClassRepository = schoolClassRepository;
-    }
 
     public SchoolClass convertToEntity(SchoolClassDTO schoolClassDTO){
         return new ModelMapper().map(schoolClassDTO,SchoolClass.class);

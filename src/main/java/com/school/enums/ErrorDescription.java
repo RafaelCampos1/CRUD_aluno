@@ -12,10 +12,10 @@ public enum ErrorDescription {
     STUDENTS_NOT_FOUND("THERE IS NO STUDENT YET"),
     SCHOOL_CLASS_NOT_FOUND("SCHOOL CLASS NOT FOUND");
 
-    private final String errorDescription;
+    private final String description;
 
-    ErrorDescription(String errorDescription) {
-        this.errorDescription = errorDescription;
+    ErrorDescription(String description) {
+        this.description = description;
     }
 
 

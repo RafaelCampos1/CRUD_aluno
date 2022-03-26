@@ -38,7 +38,7 @@ class SchoolClassControllerTest {
 
     public void startSchoolClass(){
         schoolClass = new SchoolClass();
-        schoolClass.setId(1L);
+        schoolClass.setId("1");
         schoolClass.setSchoolClassName("School Class A");
     }
 

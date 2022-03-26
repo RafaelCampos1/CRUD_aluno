@@ -101,13 +101,13 @@ class SchoolClassServiceTest {
 
     public void startSchoolClass(){
         schoolClass = new SchoolClass();
-        schoolClass.setId(1L);
+        schoolClass.setId("1");
         schoolClass.setSchoolClassName("School Class A");
     }
 
     public void startStudent(){
         student = new Student();
-        student.setId(1L);
+        student.setId("1");
         student.setFirstName("rafael");
         student.setLastName("Campos");
         student.setCpf("081");

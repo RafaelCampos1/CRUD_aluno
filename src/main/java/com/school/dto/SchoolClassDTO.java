@@ -13,16 +13,16 @@ import java.util.List;
 @Setter
 public class SchoolClassDTO {
 
-    private Long Id;
+    private String id;
     private String schoolClassName;
     private List<Student> studentList = new ArrayList<>();
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public Long getId() {
-        return Id;
+    public String getId() {
+        return id;
     }
     @JsonIgnore
-    public void setId(Long id) {
-        Id = id;
+    public void setId(String id) {
+        this.id = id;
     }
 }

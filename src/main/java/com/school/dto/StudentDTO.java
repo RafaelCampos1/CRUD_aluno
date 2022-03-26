@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 public class StudentDTO {
 
 
-    private Long Id;
+    private String id;
     @NotBlank(message = "{firstName.not.blank}")
     private String firstName;
     @NotBlank(message = "{lastName.not.blank}")
@@ -26,13 +26,13 @@ public class StudentDTO {
     private String schoolClass;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public Long getId() {
-        return Id;
+    public String getId() {
+        return id;
     }
 
     @JsonIgnore
-    public void setId(Long id) {
-        Id = id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

@@ -36,6 +36,8 @@ class StudentServiceTest {
     StudentService studentService;
 
     private Student student;
+    private Student studentNull;
+    private SchoolClass schoolClass;
 
 
     //executado antes de qualquer coisa da classe
@@ -47,8 +49,8 @@ class StudentServiceTest {
 
     @Test
     void convertToDTO() {
-        Mockito.when(studentRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(student));
-        Student student = studentService.findById(1L);
+        Mockito.when(studentRepository.findById(Mockito.anyString())).thenReturn(Optional.of(student));
+        Student student = studentService.findById("1L");
         StudentDTO studentDTO = studentService.convertToDTO(student);
         assertNotNull(studentDTO);
         assertEquals(StudentDTO.class,studentDTO.getClass());
@@ -65,8 +67,8 @@ class StudentServiceTest {
 
     @Test
     void convertToEntity() {
-        Mockito.when(studentRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(student));
-        StudentDTO studentDTO = new ModelMapper().map(studentService.findById(1L), StudentDTO.class);
+        Mockito.when(studentRepository.findById(Mockito.anyString())).thenReturn(Optional.of(student));
+        StudentDTO studentDTO = new ModelMapper().map(studentService.findById("1"), StudentDTO.class);
         Student studentResponse = studentService.convertToEntity(studentDTO);
         assertNotNull(studentResponse);
         assertEquals(Student.class,studentResponse.getClass());
@@ -79,7 +81,7 @@ class StudentServiceTest {
         ConflictException conflictException = assertThrows(ConflictException.class, () -> {
             studentService.findStudentByEmail(student);
         });
-        Assertions.assertEquals(ErrorDescription.SAME_EMAIL.getErrorDescription(),conflictException.getMessage());
+        Assertions.assertEquals(ErrorDescription.SAME_EMAIL.getDescription(),conflictException.getMessage());
     }
 
     @Test
@@ -89,14 +91,14 @@ class StudentServiceTest {
         ConflictException conflictException = assertThrows(ConflictException.class, () -> {
             studentService.findStudentByCpf(student);
         });
-        Assertions.assertEquals(ErrorDescription.SAME_CPF.getErrorDescription(),conflictException.getMessage());
+        Assertions.assertEquals(ErrorDescription.SAME_CPF.getDescription(),conflictException.getMessage());
     }
 
     @Test
     void whenFindByIdReturnAnStudent() {
-        Mockito.when(studentRepository.findById(1L))
+        Mockito.when(studentRepository.findById("1"))
                 .thenReturn(Optional.of(student));
-        Student student = studentService.findById(1L);
+        Student student = studentService.findById("1");
         Assertions.assertEquals(Student.class,student.getClass());
         Assertions.assertNotNull(Student.class);
     }
@@ -109,7 +111,7 @@ class StudentServiceTest {
             studentService.findById(student.getId()+1);
         });
         Assertions.assertNotNull(notFoundException);
-        Assertions.assertEquals(ErrorDescription.STUDENT_NOT_FOUND.getErrorDescription(),notFoundException.getMessage());
+        Assertions.assertEquals(ErrorDescription.STUDENT_NOT_FOUND.getDescription(),notFoundException.getMessage());
 
     }
 
@@ -131,6 +133,24 @@ class StudentServiceTest {
     }
 
     @Test
+    void getNewSchoolClassNamee() {
+        startSchoolClass();
+        List<SchoolClass> schoolClassListZero = schoolClassService.findAllSchoolClasses();
+        assertTrue(schoolClassListZero.isEmpty());
+        String nameZero = studentService.getNewSchoolClassName();
+        assertTrue(nameZero.contains("School Class A"));
+
+        Mockito.when(schoolClassService.findAllSchoolClasses()).thenReturn(List.of(schoolClass));
+        List<SchoolClass> schoolClassList = schoolClassService.findAllSchoolClasses();
+        assertEquals(schoolClassList.size(),1);
+        String name = studentService.getNewSchoolClassName();
+        assertTrue(name.contains("School Class"));
+
+
+    }
+
+
+    @Test
     void saveStudent() {
         startSchoolClass();
     //    Mockito.when(studentRepository.save(student)).thenReturn(student);
@@ -141,7 +161,7 @@ class StudentServiceTest {
 
     private void startStudent(){
         student = new Student();
-        student.setId(1L);
+        student.setId("1");
         student.setFirstName("rafael");
         student.setLastName("Campos");
         student.setCpf("081");
@@ -151,8 +171,8 @@ class StudentServiceTest {
     }
 
     private void startSchoolClass(){
-        SchoolClass schoolClass = new SchoolClass();
-        schoolClass.setId(1L);
+        schoolClass = new SchoolClass();
+        schoolClass.setId("1");
         schoolClass.setSchoolClassName("rafael");
     }
 

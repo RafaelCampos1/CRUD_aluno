@@ -7,40 +7,45 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.MapBindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.validation.BindingResultUtils.getBindingResult;
 @Slf4j
 class ControllerAdviceExceptionTest {
 
     @InjectMocks
     ControllerAdviceException controllerAdviceException;
 
+    private MessageExceptionHandler messageExceptionHandler;
+
     @Mock
     private BindingResult bindingResult;
+
 
     @BeforeEach
     void setUp(){
         MockitoAnnotations.openMocks(this);
+        messageExceptionHandler = new MessageExceptionHandler(new Date(), 400, "not found");
     }
 
+    @Test
+    void testAttributesOnMessageHandler(){
+        assertNotNull(messageExceptionHandler.getMessage());
+        assertNotNull(messageExceptionHandler.getStatus());
+        assertNotNull(messageExceptionHandler.getTimestamp());
+    }
     @Test
     void resourceAlreadyExists() {
         ResponseEntity<MessageExceptionHandler> messageExceptionSameCpf = controllerAdviceException.resourceAlreadyExists(

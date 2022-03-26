@@ -1,10 +1,7 @@
 package com.school.controller;
 
-import com.school.dto.SchoolClassDTO;
 import com.school.dto.StudentDTO;
 import com.school.model.Student;
-import com.school.repository.StudentRepository;
-import com.school.service.SchoolClassService;
 import com.school.service.StudentService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
 class StudentControllerTest {
@@ -43,7 +40,7 @@ class StudentControllerTest {
 
     @Test
     void getStudent() {
-        Mockito.when(studentService.findById(Mockito.anyLong())).thenReturn(student);
+        Mockito.when(studentService.findById(Mockito.anyString())).thenReturn(student);
         ResponseEntity<StudentDTO> studentDTOResponse = studentController.getStudent(student.getId());
 
         assertEquals(studentDTOResponse.getStatusCode(), HttpStatus.OK);
@@ -76,7 +73,7 @@ class StudentControllerTest {
 
     private void startStudent(){
         student = new Student();
-        student.setId(1L);
+        student.setId("1");
         student.setFirstName("rafael");
         student.setLastName("Campos");
         student.setCpf("081");

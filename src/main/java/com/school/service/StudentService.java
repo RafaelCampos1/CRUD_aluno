@@ -13,7 +13,6 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,7 +49,7 @@ public class StudentService {
             throw new ConflictException(ErrorDescription.SAME_EMAIL);
     }
 
-    public Student findById(Long id) {
+    public Student findById(String id) {
         return studentRepository.findById(id)
                 .orElseThrow(()-> new NotFoundException(ErrorDescription.STUDENT_NOT_FOUND));
     }
@@ -101,7 +100,7 @@ public class StudentService {
 
     public String getNewSchoolClassName(){
         List<SchoolClass> schoolClassList = schoolClassService.findAllSchoolClasses();
-        if(schoolClassList.size()==0){
+        if(schoolClassList.isEmpty()){
             return "School Class A";
         }
         String schoolClassNameInDESC = schoolClassList.get(schoolClassList.size()-1).getSchoolClassName();
