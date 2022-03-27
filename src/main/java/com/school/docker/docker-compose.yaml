@@ -2,22 +2,13 @@ version: "3"
 
 services:
   sonarqube:
-    build:
-      context: .
-      dockerfile: Dockerfile.sonar
+    image: sonarqube:community
     expose:
       - 9000
     ports:
       - "127.0.0.1:9000:9000"
-    networks:
-      - dev-network
     environment:
       - sonar.forceAuthentication=false
-    volumes:
-      - sonarqube_conf:/opt/sonarqube/conf
-      - sonarqube_data:/opt/sonarqube/data
-      - sonarqube_extensions:/opt/sonarqube/extensions
-      - sonarqube_bundled-plugins:/opt/sonarqube/lib/bundled-plugins
 
   mongodb:
     image: mongo
@@ -27,16 +18,12 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=rootpass
     ports:
       - 27017:27017
-    restart: always
-    networks:
-      - dev-network
 
   mongo-express:
     image: mongo-express
     container_name: mongodb-express
     ports:
       - 8081:8081
-    restart: unless-stopped
     environment:
       - ME_CONFIG_MONGODB_SERVER=mongodb
       - ME_CONFIG_MONGODB_PORT=27017
@@ -45,17 +32,3 @@ services:
       - ME_CONFIG_MONGODB_ADMINPASSWORD=rootpass
     depends_on:
       - mongodb
-    networks:
-      - dev-network
-
-networks:
-  dev-network:
-
-
-volumes:
-  sonarqube_conf:
-  sonarqube_data:
-  sonarqube_extensions:
-  sonarqube_bundled-plugins:
-  postgresql:
-  postgresql_data:
