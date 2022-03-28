@@ -31,7 +31,7 @@ public class SchoolClassService {
     }
 
     public SchoolClass findSchoolByName(String name) {
-        return Optional.of(schoolClassRepository.findBySchoolClassName(name))
+        return Optional.ofNullable(schoolClassRepository.findBySchoolClassName(name))
                 .orElseThrow(()-> new NotFoundException(ErrorDescription.SCHOOL_CLASS_NOT_FOUND));
     }
 

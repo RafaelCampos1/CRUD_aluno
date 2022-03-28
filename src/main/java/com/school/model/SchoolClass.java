@@ -17,6 +17,7 @@ public class SchoolClass {
     @Id
     private String id;
     private String schoolClassName;
+
     @DBRef
     private List<Student> studentList = new ArrayList<>();
 

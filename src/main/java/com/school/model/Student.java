@@ -2,6 +2,7 @@ package com.school.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 

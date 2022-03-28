@@ -75,7 +75,8 @@ public class StudentService {
 
     public Student saveStudent(Student student) {
 
-       //validateStudentOnSave(student);
+       validateStudentOnSave(student);
+
         Optional<SchoolClass> schoolClassLessFive = schoolClassService.findAllSchoolClasses().stream()
                 .filter(schoolClass -> schoolClass.getStudentList().size() < 5).findFirst();
 
