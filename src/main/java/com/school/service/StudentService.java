@@ -10,7 +10,13 @@ import com.school.repository.StudentRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+
+
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -22,9 +28,12 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final SchoolClassService schoolClassService;
 
-    public StudentService(StudentRepository studentRepository, SchoolClassService schoolClassService) {
+    private final MongoTemplate mongoTemplate;
+
+    public StudentService(StudentRepository studentRepository, SchoolClassService schoolClassService, MongoTemplate mongoTemplate) {
         this.studentRepository = studentRepository;
         this.schoolClassService = schoolClassService;
+        this.mongoTemplate = mongoTemplate;
     }
 
     public StudentDTO convertToDTO(Student student){
@@ -73,14 +82,19 @@ public class StudentService {
         if (schoolClassLessFive.isEmpty() ) {
             SchoolClass newSchoolClass = new SchoolClass();
             newSchoolClass.setSchoolClassName(getNewSchoolClassName());
-            newSchoolClass.getStudentList().add(student);
             student.setSchoolClass(newSchoolClass.getSchoolClassName());
+            studentRepository.save(student);
+            newSchoolClass.getStudentList().add(student);
             schoolClassService.saveSchoolClass(newSchoolClass);
-            return studentRepository.save(student);
+            return student;
         }
         student.setSchoolClass(schoolClassLessFive.get().getSchoolClassName());
+        studentRepository.save(student);
         schoolClassLessFive.get().getStudentList().add(student);
-        return studentRepository.save(student);
+        schoolClassService.saveSchoolClass(schoolClassLessFive.get());
+
+    return student;
+
     }
 
     public void validateStudentOnUpdate(Student student){

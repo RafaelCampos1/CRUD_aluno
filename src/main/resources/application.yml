@@ -7,4 +7,5 @@ spring:
       port: 27017
       authentication-database: admin
       username: rootuser
-      database: admin
+      password: rootpass
+      database: mongodb

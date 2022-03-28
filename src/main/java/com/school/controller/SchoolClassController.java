@@ -3,8 +3,6 @@ package com.school.controller;
 import com.school.dto.SchoolClassDTO;
 import com.school.service.SchoolClassService;
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

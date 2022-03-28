@@ -39,14 +39,12 @@ public class StudentController {
     @GetMapping("/students")
     @Operation(summary = "Find all students",description = "Returns all information for each student that is registered in the database")
     public ResponseEntity<List<StudentDTO>> getStudents() {
-        log.info("dsadasdsa");
         return ResponseEntity.ok().body(studentService.convertToListDTO(studentService.findAllStudents()));
     }
 
     @PostMapping(value = "/register/student")
     @Operation(summary = "Register a student",description = "Register a student. Important to put all student information (without the id)")
     public ResponseEntity<StudentDTO> saveStudent(@Valid @RequestBody StudentDTO studentDTO) {
-        log.info("dsadsadsadsadsadsadsa");
         Student student = studentService.saveStudent(studentService.convertToEntity(studentDTO));
             return new ResponseEntity<>(studentService.convertToDTO(student), HttpStatus.CREATED);
         }
